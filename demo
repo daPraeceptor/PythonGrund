@@ -1,0 +1,28 @@
+lista = [2, 5, 7, 41, 12, 98, 42, 23, 31, 62, 82] # ok
+
+lista.pop (0)
+print (lista)
+
+def swap (l, a, b): # ok
+    temp = l[a]
+    l[a] = l[b]
+    l[b] = temp
+
+swap (lista, 0, 2) # ok
+
+def hittaMinPlats (lista, starti ):
+    minPlats = starti
+
+    for i in range (starti + 1, len(lista)): # i = 1, 2
+        if lista[minPlats] > lista[i]:
+            minPlats = i
+
+    return minPlats
+
+def selectionSort (lista):
+    for i in range (len(lista) - 1): # 0, 1
+        swap (lista, i, hittaMinPlats (lista, i))
+
+#print (lista)
+selectionSort (lista)
+#print (lista)

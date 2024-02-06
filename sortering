@@ -1,0 +1,47 @@
+ 
+lista1 = [3, 7, 8, 9, 19, 22, 27, 29]
+lista2 = [2, 6, 10, 20, 25]
+
+listaJ = []
+#print (lista1.pop (0))
+
+while True:
+    if lista1[0] < lista2[0]:
+        listaJ.append(lista1.pop(0))
+    else:
+        listaJ.append(lista2.pop(0))
+
+    if len(lista1) == 0:
+        listaJ = listaJ + lista2
+        break
+
+    if len(lista2) == 0:
+        listaJ = listaJ + lista1
+        break
+
+print (listaJ)
+
+
+
+def join1 (lista1, lista2, listaJ):
+    i1 = 0
+    i2 = 0
+    while True:
+        if  lista1[i1] > lista2[i2]:
+            # Lägg till i listaJ
+            listaJ.append (lista2[i2])
+            i2 = i2 + 1                     # i2 += 1
+        else:
+            listaJ.append (lista1[i1])
+            i1 = i1 + 1                     # i1 += 1
+
+        if i1 >= len(lista1):
+            listaJ = listaJ + lista2[i2:]
+            break
+
+        if i2 >= len(lista2):
+            listaJ = listaJ + lista1[i1:]
+            break
+
+#join1 (lista1, lista2, listaJ)
+#print (listaJ)

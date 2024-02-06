@@ -1,0 +1,4 @@
+import numpy
+
+print ("Hej")
+a = numpy.array ([1, 2, 3])

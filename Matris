@@ -1,0 +1,35 @@
+map = []
+player_x = 1
+player_y = 1
+
+def skapa_karta (karta, max_x, max_y):
+    for y in range (max_y):
+        rad = []
+        for x in range (max_x):
+            rad.append ("-")
+        karta.append (rad)
+
+def visa_karta (karta):
+    for rad in karta:
+        for c in rad:
+            print (c, end="")
+        print ()
+
+
+skapa_karta (map, 60, 15)
+
+while True:
+    visa_karta (map)
+
+    svar = input ("Vart vill du gå?")
+    if svar.lower() == "s":
+        player_y += 1
+    if svar.lower() == "n":
+        player_y -= 1
+    if svar.lower() == "e":
+        player_x += 1
+    if svar.lower() == "w":
+        player_x -= 1
+    map[player_y][player_x] = "X"
+    
+    

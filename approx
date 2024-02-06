@@ -1,0 +1,33 @@
+import math
+# Approximera pi med ett bråk
+# 3.14159265358979323846...
+
+# a / b = 3.14...
+# 10 / 4 = 2.5
+
+
+#print_counter = 0
+a = 1 
+b = 1
+best_approx = 0.1
+while True:
+    approx = a / b
+    if best_approx > abs (approx-math.pi): 
+        best_approx = abs (approx-math.pi)
+        print (a, "/", b, "=", a/b)
+    if math.pi > approx:
+        a += 1
+    else:
+        b += 1
+'''    if print_counter > 10000:
+        print (a, "/", b, "=", a/b)
+        print_counter = 0
+    print_counter += 1
+'''
+
+# abs (-1)
+
+
+# Skriv ut var 10000 approximation.
+# Skrib bara ut när du hittar en "bättre" appoximation
+# Skriv ut en "effektivitets ratio" (siffror i a och b) / (antal decimaler rätt) 

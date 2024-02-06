@@ -1,0 +1,45 @@
+
+rummet = ["kiwie", "äpple", "banan"]
+inventory = []
+
+
+def skriv_lista (lista):
+    if (len(lista) <= 0):
+        print ("inget.")
+        return
+    for i in range (len(lista)): # i = 0, 1, 2    fast len(lista) == 3
+        if i == len(lista) - 2:
+            print (lista[i], end =" och ")
+        elif i < len(lista) - 2:
+            print (lista[i], end =", ")
+        else: 
+            print (lista[i], end =".")
+    print ()
+
+
+while True:
+    print ("I rummet ser du: ", end="")
+    skriv_lista (rummet)
+    print ("I din ficka har du: ", end="")
+    skriv_lista (inventory)
+
+    if len(rummet) > 0:
+        print ("Vilken sak vill du ta upp?")
+    else:
+        print ("Tack! Nu är rummet tomt.")
+        break
+    #sak_text = ""
+    while True:
+        try:
+            sak_text = input()
+            sak = rummet.index (sak_text)
+            inventory.append (rummet[sak])
+            rummet.pop (sak)
+            break
+        except:
+            print ("Det kan du inte plocka upp!")
+            if sak_text not in rummet:
+                print ("Väl ett nummer på en sak som finns.")
+
+
+

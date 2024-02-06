@@ -1,0 +1,199 @@
+import numpy as np
+import pygame
+import math
+
+pygame.init ()
+screen = pygame.display.set_mode ((640, 480), pygame.NOFRAME)
+pygame.display.set_caption ("Tjena")
+
+#color_b = pygame.Color(30, 30, 200, a=255)
+screen.fill((0,0,0))
+
+d = 200 # distance to screen
+light_source_pos = [-10000, -20000, -50] 
+
+class Surface2d:
+    color = pygame.Color(100, 100, 100, a=255)
+    points = []
+    max_z = 0
+
+    def __init__ (self):
+        self.color = pygame.Color(100, 100, 100, a=255)
+        self.points = [] 
+        self.max_z = 0
+
+
+
+class Shape:
+    # Core attributes
+    pos = [0, 0, 0]
+    rotation = [0, 0, 0]
+    points = [] # [[x, y, z], [x, y, z]]
+    color = pygame.Color (0, 100, 0, 255)
+    surfaces = [] # [[s1, s2, s3, ...], ...]
+
+    # project_
+    rotated_points = []
+    lumination = []
+    surfaces_colors = []
+
+    projected_2d_area  = []
+    surfaces_max_z = []
+
+    def __init__(self, pos, color) -> None:
+        self.pos = pos
+        self.color = color
+
+    def set_color (self, color):
+        self.color = color
+
+    def make_cube (self, size_x, size_y, size_z):
+        # Create 8 points
+        for i in range (8):
+            new_point = [(i%2) * -1 * size_x + ((i + 1)%2) * size_x,
+                         (int(i/2)%2) * -1 * size_y + (int((i+2)/2)%2) * size_y,
+                         (int(i/4)%2) * -1 * size_z + (int((i+4)/4)%2) * size_z]
+            self.points.append (new_point)
+
+        # Create 6 surfaces
+        #for i in range (6):
+        surf = []
+        surf.append([0, 1, 3, 2]) # z = 100
+        surf.append([6, 7, 5, 4]) # z = -100
+        surf.append([0, 4, 5, 1]) # y = 100
+        surf.append([2, 3, 7, 6]) # y = -100
+        surf.append([0, 2, 6, 4]) # x = 100
+        surf.append([1, 5, 7, 3]) # x = -100
+        self.surfaces = surf
+
+        #print (self.points)
+
+    def rotate (self): # Rotate all points
+        self.rotated_points = []
+        for p in self.points:
+            # round y = rotation [1]
+            rot_point = [p[0] * math.cos (self.rotation[1]) + p[2] * math.sin (self.rotation[1]), 
+                         p[1], 
+                         p[0] * math.sin (self.rotation[1]) - p[2] * math.cos (self.rotation[1]) ]
+            # round x = rotation [0]
+            rot_point = [rot_point[0], 
+                         rot_point[1] * math.cos (self.rotation[0]) + rot_point[2] * math.sin (self.rotation[0]), 
+                         rot_point[1] * math.sin (self.rotation[0]) - rot_point[2] * math.cos (self.rotation[0]) ]
+            # round z = rotation [2]
+            rot_point = [rot_point[0] * math.cos (self.rotation[2]) + rot_point[1] * math.sin (self.rotation[2]), 
+                         rot_point[0] * math.sin (self.rotation[2]) - rot_point[1] * math.cos (self.rotation[2]),
+                         rot_point[2] ]
+            self.rotated_points.append (rot_point)
+
+    def rotate_surfaces (self): # Rotates all surfaces and update rotated_surfaces och colors
+        self.rotated_surfaces = []
+        self.lumination = []
+        for s in self.surfaces:
+            # rotate
+            self.rotate ()
+            # add pos
+            s_points = []
+
+            for p in s:
+                # p = [0, 1, 3, 2]
+                s_p = []
+                for i in range (3):
+                    s_p.append (self.rotated_points[p][i] + self.pos[i])
+                s_points.append (s_p)
+            # is surface visible?
+            # Calculate normal to [1] and [2]. Subtract [0]
+            # s_points[1] - s_points [0]                
+            # and do crossproduct
+            s_normal = np.cross (np.subtract (s_points[1], s_points [0]),
+                         np.subtract (s_points[2], s_points [0]))
+            eye_vector = np.array (s_points[0])
+            # Scalar product against observer
+            angle = np.dot (eye_vector, s_normal) 
+            # Add only surfaces facing observer 
+            if angle > 0:
+                self.rotated_surfaces.append (s_points)
+                # Scalar product against light source
+                light_vector = np.subtract (light_source_pos, s_points[0])
+                dot_prod = np.dot (light_vector, s_normal)
+                length2 = np.linalg.norm (light_vector) * np.linalg.norm (s_normal)
+                light_angle = math.acos (dot_prod / length2)
+                # Brightness
+                #print (light_angle * 255 / math.pi)
+                self.lumination.append (int (light_angle * 255 / math.pi))
+        #return surfaces, colors # [[[x, y, z], [x, y, z], ...], [[x, y, z], [x, y, z], ...], ...]
+
+    def project (self): # convert from rotated prints to 2d
+        width, height = pygame.display.get_window_size()
+        self.projected_2d_area = []
+        for s in self.rotated_surfaces:
+            surf_2d = []
+            z = 0
+            for p in s:
+                surf_2d.append ([width / 2 + p[0] * d / p[2], height / 2 + p[1] * d / p[2]])
+                if p[2] > z:
+                   z = p[2]
+            self.projected_2d_area.append (surf_2d)
+            self.surfaces_max_z = z
+
+
+shapes = []
+
+for i in range (10):
+    cube = Shape (((i-5) * 80 , 0 ,800), pygame.Color ((i%2)*200, int(i/2)%2 * 200, int(i/4)%2 * 200, 255))
+    cube.make_cube (20, 20, 200) 
+    shapes.append (cube)
+
+
+def draw ():
+    global shapes
+
+    surfs = []
+    colors = []
+    # Get surfaces from all objects
+    for s in shapes:
+        s.rotate_surfaces ()
+        s.project ()
+       
+    # Clear screen
+    screen.fill ((0,0,0))
+
+
+    for s in shapes:
+        #print (s.projected_2d_area)
+        c = 0
+        for surf in s.projected_2d_area:
+            #print (s.color[0])
+            color = pygame.Color (int (s.color[0] * s.lumination[c] / 256),
+                                  int (s.color[1] * s.lumination[c] / 256),
+                                    int (s.color[2] * s.lumination[c]/ 256), 255)
+            c += 1
+            pygame.draw.polygon (screen, color, surf)
+    pygame.display.update()
+
+# Game Loop
+def main_gameloop (): 
+    while True:
+        for event in pygame.event.get():
+            draw ()
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+            if event.type == pygame.KEYDOWN:
+                key=pygame.key.name(event.key)
+                print (key, "Key is pressed")
+            if event.type == pygame.KEYUP:
+                key=pygame.key.name(event.key)
+                print (key, "Key is released")
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos=pygame.mouse.get_pos()
+                btn=pygame.mouse
+                #pygame.draw.rect (screen, color_b, pygame.Rect (pos[0], pos[1], 2, 2))
+                #print ("Click at x = {}, y = {}".format(pos[0], pos[1]))
+
+            if event.type == pygame.MOUSEMOTION:
+                pos=pygame.mouse.get_pos()
+                w, h = pygame.display.get_window_size ()
+                cube.rotation [0] = math.pi * 2 * -pos[1] / h
+                cube.rotation [1] = math.pi * 2 * pos[0] / w
+
+main_gameloop()

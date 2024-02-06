@@ -1,0 +1,13 @@
+import math
+a = 1
+b = 1
+
+best_dist = 0.1
+while True:
+    if a/b < math.pi:
+        a += 1
+    else:
+        b += 1
+    if abs(math.pi - a/b) < best_dist:
+        best_dist = abs(math.pi - a/b)
+        print (a, "/", b, "=", a/b)

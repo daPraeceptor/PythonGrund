@@ -1,0 +1,89 @@
+# av Elliot Carlson
+from os import system
+import random
+import time
+ 
+def delay(secs):
+    time.sleep(secs)
+ 
+def shuffle(list):
+    random.shuffle(list)
+ 
+def minPos(list, start):
+    minPos = start
+    for i in range(start, len(list)):
+        if list[i] < list[minPos]:
+            minPos = i
+    return minPos
+ 
+def swap(list, a, b):
+    list[a], list[b] = list[b], list[a]
+ 
+def sort(list):
+    action = 0
+    for i in range(len(list)):
+        action += 1
+        swap(list, i, minPos(list, i))
+        vis(list)
+        delay(0.1)
+        system('cls')
+    return action
+ 
+def sortV1(list):
+    action = 0
+    sorted = False
+    while not sorted:
+        sorted = True
+        for i in range(1, len(list)):
+            if list[i-1] > list[i]:
+                action += 1
+                system("cls")
+                swap(list, i, (i-1))
+                vis(list)
+               
+                sorted = False
+    return action
+ 
+#   -   -   -   -   -   -   -   -   -   -   -   -   -   #
+ 
+def vis(list):
+    display = [[" " for _ in range(len(list))] for _ in range(max(list))]
+   
+    for i in range(len(display)):
+        for j in range(len(list)):
+            if list[j] >= len(display) - i:
+                display[i][j] = "#"
+   
+    vis2(display)
+ 
+def vis2(display):
+    for row in display:
+        for item in row:
+            print(item, end=" ")
+        print()
+ 
+#   -   -   -   -   -   -   -   -   -   -   -   -   -   #
+ 
+system('cls')
+print()
+print()
+print()
+print()
+ 
+List = [random.randint(5, 31) for i in range(30)]
+vis(List)
+print("Sort")
+input()
+start_time = time.time()
+sortAction = sort(List)
+sortTime = (time.time() - start_time)*1000
+print(f"Sort : {sortTime}ms | {sortAction} actions")
+system('cls')
+List = [random.randint(5, 31) for i in range(30)]
+vis(List)
+input()
+system('cls')
+start_time = time.time()
+action = sortV1(List)
+print(f"SortV1 : {(time.time() - start_time)*1000}ms | {action} actions ")
+print(f"Sort : {sortTime - (sortAction*100)}ms | {sortAction} actions")

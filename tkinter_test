@@ -1,0 +1,15 @@
+import tkinter
+
+root = tkinter.Tk ()
+
+root.geometry("800x200")
+
+la = tkinter.Label (root, text="Text", font=("helvetica", 12))
+la.pack()
+
+def metod (event):
+    print ('Text ut %d, %d'% (event.x, event.y))
+
+root.bind ("<Enter>", metod)
+
+root.mainloop ()

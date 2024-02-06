@@ -1,0 +1,15 @@
+max_points = input ("Mata in maxpoäng på provet:")
+
+def diagram (tabell):
+    for i in range (len(tabell)):
+        print (i, "*" * tabell[i])
+
+def mata_in ():
+    tabell = [0] * max_points
+    while True:
+        try:
+            tabell[int (input ("Mata in en elevs resultat:"))] += 1
+        except:
+            return tabell
+
+diagram (mata_in ())
