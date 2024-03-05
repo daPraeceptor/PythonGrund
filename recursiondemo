@@ -1,0 +1,18 @@
+
+# Rekursivitet lektion 1.
+
+def rek (i):
+    if i < 0:
+        return
+    
+    # precall
+    print (i, end=" ")
+
+    # the recursive call
+    rek (i - 1)
+
+    #postcall
+    print (i, end=" ")
+    
+
+rek (10)

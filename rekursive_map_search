@@ -1,0 +1,35 @@
+# rekursivitet
+
+map = [["X", "X", "X", "X", "X", "X", "X", "X"],
+     ["X", ".", ".", ".", ".", ".", "X", "X"],
+     ["X", ".", "X", "X", "X", ".", "X", "X"],
+     ["X", "X", "X", ".", "X", ".", "X", "X"],
+     ["X", "X", "X", ".", ".", ".", "S", "X"],
+     ["X", "X", "X", "X", "X", "X", "X", "X"]]
+
+def r (x, y):
+    global map
+    # end statement
+    
+    #if x < 0 or y < 0 or x >= len(map[0]) or y >= len(map):
+       # return
+    if map[x][y] == "X":
+        return
+    if map[x][y] == "S":
+        print ("\nGrattis skatten är hittad på", y, x )
+        return
+    
+    # pre-call
+    map[x][y] = "X"
+
+    # the recursive call
+    r (x, y - 1) # n
+    r (x - 1, y) # w
+    r (x + 1, y) # ö
+    r (x, y + 1) # s
+
+    # post-call
+
+# Start at 1, 1
+if __name__ == "__main__":
+    r (1, 1)

@@ -1,0 +1,38 @@
+map = [
+        ["X", "X", "X", "X", "X", "X", "X", "X", "X", "X",],
+        ["X", ".", ".", "X", "X", "X", "X", ".", "X", "X",],
+        ["X", ".", ".", ".", ".", ".", "X", ".", "X", "X",],
+        ["X", ".", ".", ".", ".", ".", "X", ".", "X", "X",],
+        ["X", ".", ".", ".", ".", ".", "X", ".", ".", "X",],
+        ["X", ".", ".", "X", ".", ".", ".", "X", ".", "X",],
+        ["X", ".", "X", "X", "X", "X", ".", "X", ".", "X",],
+        ["X", "X", "X", "X", "X", "X", "X", "X", "X", "X",],
+    ]
+
+def print_map ():
+    for row in map:
+        for c in row:
+            print (c, end="")
+        print ()
+
+def rek (x, y):
+    global map
+    if map[y][x] == "X":
+        return
+    if map[y][x] == "S":
+        print ("Skatten hittad på", x, ", ", y)
+        return
+
+    map[y][x] = "X"
+
+    rek (x, y - 1) # upp
+    rek (x, y + 1) # ner
+    rek (x - 1, y) # left
+    rek (x + 1, y) # right
+
+
+print_map ()
+rek (1, 1)
+print_map ()
+
+

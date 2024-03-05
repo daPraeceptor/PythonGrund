@@ -1,0 +1,81 @@
+import random
+l = [3, 1, 1, 2] #, 1, 2 , 8, 10, 30, 1, 24, 20]
+
+
+l = [random.randint (1, 30) for i in range (10)]
+
+def split (list, min_i, max_i):
+    if min_i >= max_i:
+        return
+    mini = min_i
+    maxi = max_i
+    print (list)
+    print (list[mini:maxi+1])
+    pivot = (list[mini] + list[maxi] + list[(mini+maxi)//2] ) // 3
+    while mini <= maxi:
+        if list[mini] <= pivot:
+            mini += 1
+        else:
+            # Swap
+            list[mini], list[maxi] = list[maxi], list[mini]
+            maxi -= 1
+
+    split_point = mini - 1 # = maxi
+    print ("pivot", pivot, "min_i", min_i, "max_i", max_i, end= ". ")
+    print ("mini", mini, "maxi", maxi, end= ". ")
+    print ("split_poiont", split_point)
+    
+    if min_i < split_point and list[min_i] != list[split_point]:
+        print ("1:", list[min_i:split_point + 1])
+        split (list, min_i, split_point)
+    if split_point + 1 < max_i:
+        print ("2:", list[split_point + 1: max_i + 1])
+        split (list, split_point + 1, max_i)
+
+
+
+def split2 (list, min, max):
+    print ("Split2 called:", list[min:max+1])
+
+    if min >= max:
+        return
+    
+    mini = min
+    maxi = max
+
+    pivot = (list[mini]+ list[maxi]) // 2 
+    print ("Pivot:", pivot)
+    while mini < maxi:
+        while True:
+            if list[mini] <= pivot:
+                mini += 1
+            else:
+                print ("Found mini:", mini, end="")
+                break
+        while True:
+            if list[maxi] > pivot:
+                maxi -= 1
+            else:
+                print ("Found maxi:", maxi)
+                break
+        
+        if mini >= maxi:
+            break
+        print ("Swap at:", mini, " maxi:",maxi)
+        list[mini], list[maxi] = list[maxi], list[mini]
+        mini += 1
+        maxi -= 1
+        if mini >= maxi:
+            print ("Stop at mini:", mini, " maxi:",maxi)
+            break
+
+ #   split2 (list, min, mini-1)
+ #   split2 (list, mini, max)    
+
+def qsort (list):
+    split2 (list, 0, len(l) - 1)
+
+
+print (l)
+qsort (l)
+print (l)
